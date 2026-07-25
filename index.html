@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reel Roster — TV Show Directory</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+<link rel="stylesheet" href="assets/css/style.css" />
+<script src="assets/js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- Top navigation -->
+  <nav class="topnav" id="top">
+    <div class="topnav-inner">
+      <a href="#top" class="brand">REEL <span>ROSTER</span></a>
+
+      <button class="burger" id="burgerBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#top">Home</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#genres">Genres</a></li>
+        <li><a href="#roster">Full Roster</a></li>
+        <li><a href="#site-footer">About</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="nav-backdrop" id="navBackdrop"></div>
+
+  <!-- Marquee header -->
+  <header class="marquee">
+    <div class="marquee-inner">
+      <div class="sprockets"></div>
+      <div class="marquee-content">
+        <span class="eyebrow">NOW SCREENING</span>
+        <h1 class="title">REEL ROSTER</h1>
+        <p class="subtitle">A directory of television, pulled straight from the wire.</p>
+      </div>
+      <div class="sprockets"></div>
+    </div>
+  </header>
+
+  <!-- Search & filter -->
+  <section class="search-section" id="search">
+    <div class="controls">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search the roster… (title)" autocomplete="off">
+      </div>
+      <div class="filter-wrap">
+        <select id="genreFilter" class="genre-select">
+          <option value="">All genres</option>
+        </select>
+        <select id="sortSelect" class="genre-select">
+          <option value="name">Sort: Title A–Z</option>
+          <option value="rating">Sort: Rating high–low</option>
+          <option value="premiered">Sort: Newest first</option>
+        </select>
+      </div>
+    </div>
+  </section>
+  <div id="searchSpacer" class="search-spacer"></div>
+
+  <!-- Genre carousels -->
+  <section class="genre-section" id="genres">
+    <div class="section-head">
+      <span class="eyebrow">BROWSE</span>
+      <h2 class="section-heading">Shelf by genre</h2>
+    </div>
+    <div id="genreCarousels">
+      <!-- rows injected by JS -->
+    </div>
+  </section>
+
+  <main class="container-fluid" id="roster">
+
+    <div class="section-head">
+      <span class="eyebrow">DIRECTORY</span>
+      <h2 class="section-heading">Full roster</h2>
+    </div>
+
+    <div id="statusMsg" class="status-msg"></div>
+
+    <div id="showGrid" class="show-grid"></div>
+
+    <div class="load-more-wrap">
+      <button id="loadMoreBtn" class="btn-load-more">Load next reel &rarr;</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" id="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#top" class="brand">REEL <span>ROSTER</span></a>
+        <p>A directory of television, pulled straight from the wire. Built as a demo on top of the TVmaze API.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="#top">Home</a></li>
+          <li><a href="#search">Search</a></li>
+          <li><a href="#genres">Genres</a></li>
+          <li><a href="#roster">Full roster</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <ul>
+          <li><a href="https://api.tvmaze.com/shows" target="_blank" rel="noopener">TVmaze API</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">Send feedback</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Terms of use</a></li>
+          <li><a href="#">Privacy policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>Data reeled in from the <a href="https://api.tvmaze.com/shows" target="_blank" rel="noopener">TVmaze API</a>. Demo project, not an actual streaming service.</p>
+    </div>
+  </footer>
+
+  <!-- Details Modal -->
+  <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content film-card">
+        <div class="film-perf film-perf-top"></div>
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="detailsModalLabel">Loading…</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body" id="modalBody">
+          <!-- injected by JS -->
+        </div>
+
+        <div class="film-perf film-perf-bottom"></div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="script.js"></script>
+</body>
+</html>
