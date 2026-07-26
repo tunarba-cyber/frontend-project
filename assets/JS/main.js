@@ -10,6 +10,7 @@
   const searchInput   = document.getElementById("searchInput");
   const genreFilter    = document.getElementById("genreFilter");
   const sortSelect     = document.getElementById("sortSelect");
+  const azWrap          = document.getElementById("azWrap");
   const loadMoreBtn    = document.getElementById("loadMoreBtn");
   const modalBody      = document.getElementById("modalBody");
   const modalTitle     = document.getElementById("detailsModalLabel");
@@ -74,8 +75,38 @@
   const MAX_ROW_ITEMS   = 18;
   const INITIAL_AUTO_PAGES = 3; // fetch a few pages up front so search has a wide pool to match against
 
+  let activeLetter = "";
+
   function hasActiveQuery() {
-    return searchInput.value.trim() !== "" || genreFilter.value !== "";
+    return searchInput.value.trim() !== "" || genreFilter.value !== "" || activeLetter !== "";
+  }
+
+  // ---------- A-Z quick filter ----------
+
+  function buildAzFilter() {
+    const letters = ["#", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")];
+    letters.forEach(letter => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "az-btn";
+      btn.textContent = letter;
+      btn.dataset.letter = letter;
+      azWrap.appendChild(btn);
+    });
+
+    azWrap.addEventListener("click", (e) => {
+      const btn = e.target.closest(".az-btn");
+      if (!btn) return;
+
+      const letter = btn.dataset.letter || "";
+      activeLetter = (activeLetter === letter) ? "" : letter;
+
+      azWrap.querySelectorAll(".az-btn").forEach(b => {
+        b.classList.toggle("is-active", (b.dataset.letter || "") === activeLetter);
+      });
+
+      renderShows();
+    });
   }
 
   let allShows   = [];   // every show fetched so far
@@ -146,6 +177,12 @@
 
   // ---------- Rendering ----------
 
+  function matchesFirstLetter(name, letter) {
+    const first = (name || "").trim().charAt(0).toUpperCase();
+    if (letter === "#") return first !== "" && !/[A-Z]/.test(first);
+    return first === letter;
+  }
+
   function getFilteredSortedShows() {
     const term = searchInput.value.trim().toLowerCase();
     const genre = genreFilter.value;
@@ -154,7 +191,8 @@
     let list = allShows.filter(s => {
       const matchesTerm = !term || s.name.toLowerCase().includes(term);
       const matchesGenre = !genre || (s.genres || []).includes(genre);
-      return matchesTerm && matchesGenre;
+      const matchesLetter = !activeLetter || matchesFirstLetter(s.name, activeLetter);
+      return matchesTerm && matchesGenre && matchesLetter;
     });
 
     list = list.slice().sort((a, b) => {
@@ -409,6 +447,7 @@
     updateSearchPin();
   });
 
+  buildAzFilter();
   measureSearchThreshold();
   updateSearchPin();
 

@@ -209,6 +209,10 @@ main.container-fluid{
   max-width: 1200px;
   margin: 0 auto;
 }
+.search-section.is-pinned .az-wrap{
+  max-width: 1200px;
+  margin: .75rem auto 0;
+}
 
 @keyframes search-drop{
   from{ transform: translateY(-14px); opacity: .3; }
@@ -253,6 +257,40 @@ main.container-fluid{
   font-size: .88rem;
 }
 .genre-select:focus{ outline:none; border-color: var(--gold-dim); }
+
+/* ---------- A–Z quick filter ---------- */
+.az-wrap{
+  display: flex;
+  gap: .4rem;
+  margin-top: .75rem;
+  padding-bottom: .3rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.az-wrap::-webkit-scrollbar{ height: 4px; }
+.az-wrap::-webkit-scrollbar-thumb{ background: var(--line); border-radius: 4px; }
+
+.az-btn{
+  flex: 0 0 auto;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  padding: .3rem .65rem;
+  border-radius: var(--radius);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
+}
+.az-btn:hover{ color: var(--ink); border-color: var(--gold-dim); }
+.az-btn.is-active{
+  color: #1a1a1a;
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.az-btn:disabled{ opacity: .35; cursor: not-allowed; }
+.az-btn:disabled:hover{ color: var(--ink-dim); border-color: var(--line); }
 
 .status-msg{
   color: var(--ink-dim);
@@ -805,4 +843,7 @@ main.container-fluid{
   .filter-wrap{ justify-content:space-between; }
   .show-grid{ grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: .9rem; }
   .title{ font-size: clamp(2.2rem, 12vw, 3.2rem); }
+
+  .search-section.is-pinned{ padding: .6rem .75rem; }
+  .az-btn{ padding: .28rem .55rem; font-size: .76rem; }
 }
