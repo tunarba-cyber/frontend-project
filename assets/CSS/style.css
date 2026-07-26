@@ -169,6 +169,17 @@ main.container-fluid{
   padding: 2rem 1rem 3rem;
 }
 
+/* Roster only appears once the person is actively searching/filtering */
+#roster{ display: none; }
+#roster.is-active{ display: block; }
+
+.search-hint{
+  text-align: center;
+  color: var(--ink-dim);
+  font-size: .82rem;
+  margin: .85rem 0 0;
+}
+
 /* ---------- Search section ---------- */
 .search-section{
   max-width: 1200px;
@@ -525,6 +536,58 @@ main.container-fluid{
   font-size: .8rem;
 }
 
+/* ---------- Standalone detail page ---------- */
+.detail-page{
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.back-link{
+  display: inline-block;
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: .88rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  transition: color .15s ease;
+}
+.back-link:hover{ color: var(--gold); }
+
+.detail-card{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.detail-card-body{ padding: 1.75rem; }
+
+.detail-page-header{
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.detail-page-title{
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .03em;
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  color: var(--gold);
+  margin: 0;
+  line-height: 1.05;
+}
+.detail-page-year{
+  color: var(--ink-dim);
+  font-size: 1.05rem;
+}
+
+.detail-extra-section{ padding-top: 2.5rem; }
+.detail-extra-section:last-of-type{ padding-bottom: 2.5rem; }
+
+.is-hidden{ display: none !important; }
+
 /* ---------- Modal / film card ---------- */
 .modal-content.film-card{
   background: var(--card);
@@ -554,6 +617,27 @@ main.container-fluid{
 }
 
 .modal-body{ padding: 1.4rem; }
+
+.modal-footer{
+  border-top: 1px solid var(--line);
+  padding: .9rem 1.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-see-more{
+  display: inline-block;
+  background: var(--gold);
+  color: #14140f;
+  font-weight: 700;
+  font-size: .85rem;
+  letter-spacing: .02em;
+  padding: .55rem 1.1rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background .15s ease, transform .15s ease;
+}
+.btn-see-more:hover{ background: #f2c976; transform: translateY(-1px); }
 
 .detail-layout{
   display:flex;
@@ -694,7 +778,7 @@ main.container-fluid{
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.55);
-    z-index: 1032;
+    z-index: 1025;
     opacity: 0;
     pointer-events: none;
     transition: opacity .25s ease;

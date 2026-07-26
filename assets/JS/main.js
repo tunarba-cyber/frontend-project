@@ -4,6 +4,8 @@
   const API_BASE = "https://api.tvmaze.com/shows";
 
   const grid          = document.getElementById("showGrid");
+  const rosterSection = document.getElementById("roster");
+  const searchHint    = document.getElementById("searchHint");
   const statusMsg     = document.getElementById("statusMsg");
   const searchInput   = document.getElementById("searchInput");
   const genreFilter    = document.getElementById("genreFilter");
@@ -12,6 +14,7 @@
   const modalBody      = document.getElementById("modalBody");
   const modalTitle     = document.getElementById("detailsModalLabel");
   const detailsModalEl = document.getElementById("detailsModal");
+  const seeMoreLink    = document.getElementById("seeMoreLink");
 
   // Guard against the Bootstrap bundle failing to load (slow/blocked CDN) —
   // fall back to a plain show/hide so Details never leaves the page stuck.
@@ -62,9 +65,6 @@
     btn.addEventListener("click", closeModal);
   });
 
-  const burgerBtn      = document.getElementById("burgerBtn");
-  const navLinks       = document.getElementById("navLinks");
-  const navBackdrop    = document.getElementById("navBackdrop");
   const genreCarousels = document.getElementById("genreCarousels");
   const searchSection  = document.getElementById("search");
   const searchSpacer   = document.getElementById("searchSpacer");
@@ -72,6 +72,11 @@
 
   const MAX_GENRE_ROWS  = 8;
   const MAX_ROW_ITEMS   = 18;
+  const INITIAL_AUTO_PAGES = 3; // fetch a few pages up front so search has a wide pool to match against
+
+  function hasActiveQuery() {
+    return searchInput.value.trim() !== "" || genreFilter.value !== "";
+  }
 
   let allShows   = [];   // every show fetched so far
   let nextPage   = 0;    // next page to request from the API
@@ -166,6 +171,16 @@
   }
 
   function renderShows() {
+    const active = hasActiveQuery();
+    rosterSection.classList.toggle("is-active", active);
+    searchHint.style.display = active ? "none" : "block";
+
+    if (!active) {
+      grid.innerHTML = "";
+      setStatus("");
+      return;
+    }
+
     const list = getFilteredSortedShows();
     grid.innerHTML = "";
 
@@ -300,7 +315,10 @@
   // ---------- Details modal ----------
 
   function openDetails(show) {
+    window.RecentlyViewed?.add(show);
+
     modalTitle.textContent = show.name;
+    seeMoreLink.href = `detail.html?id=${encodeURIComponent(show.id)}`;
 
     const rating   = show.rating?.average ? `★ ${show.rating.average}` : "Not yet rated";
     const genres   = (show.genres || []).map(g => `<span class="badge-pill">${escapeHtml(g)}</span>`).join("") || "—";
@@ -394,40 +412,6 @@
   measureSearchThreshold();
   updateSearchPin();
 
-  // ---------- Burger menu ----------
-
-  function closeNav() {
-    burgerBtn.classList.remove("is-open");
-    burgerBtn.setAttribute("aria-expanded", "false");
-    navLinks.classList.remove("is-open");
-    navBackdrop.classList.remove("is-open");
-  }
-
-  function openNav() {
-    burgerBtn.classList.add("is-open");
-    burgerBtn.setAttribute("aria-expanded", "true");
-    navLinks.classList.add("is-open");
-    navBackdrop.classList.add("is-open");
-  }
-
-  burgerBtn.addEventListener("click", () => {
-    if (navLinks.classList.contains("is-open")) {
-      closeNav();
-    } else {
-      openNav();
-    }
-  });
-
-  navBackdrop.addEventListener("click", closeNav);
-
-  navLinks.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", closeNav);
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && navLinks.classList.contains("is-open")) closeNav();
-  });
-
   // ---------- Events ----------
 
   let searchDebounce;
@@ -453,6 +437,13 @@
     }
   }
 
+  async function autoLoadInitialPages() {
+    for (let i = 0; i < INITIAL_AUTO_PAGES; i++) {
+      if (noMorePages) break;
+      await loadNextPage();
+    }
+  }
+
   showSkeletons();
-  loadNextPage();
+  autoLoadInitialPages();
 })();
